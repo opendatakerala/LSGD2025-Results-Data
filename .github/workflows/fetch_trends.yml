@@ -2,8 +2,8 @@ name: Fetch TREND data and commit CSV
 
 on:
   push:
-  branch:
-    - main
+    branches:
+      - main
   workflow_dispatch:
   schedule:
     # Every 30 minutes – adjust as you like (UTC)
