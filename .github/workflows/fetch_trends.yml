@@ -1,0 +1,54 @@
+name: Fetch TREND data and commit CSV
+
+on:
+  workflow_dispatch:
+  schedule:
+    # Every 30 minutes – adjust as you like (UTC)
+    - cron: "*/5 * * * *"
+
+jobs:
+  fetch-and-commit:
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # needed to push changes
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4  # fetches your code so Python can run it [web:2][web:15]
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install requests
+        # add other deps if your script needs them
+
+      - name: Run scraper
+        run: |
+          python scrape_trend_detailed.py
+        # make sure your Python file name here matches the one in the repo
+        # it will create/overwrite trend_detailed_results_2025.csv in the repo root
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+        # GitHub recommends using this bot identity in workflows that commit back [web:14]
+
+      - name: Commit and push CSV if changed
+        run: |
+          if git status --porcelain | grep -q "trend_detailed_results_2025.csv"; then
+            git add trend_detailed_results_2025.csv
+            git commit -m "Update TREND detailed results CSV"
+            git push
+          else
+            echo "No changes in CSV; skipping commit."
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Using the default GITHUB_TOKEN allows this step to push to the same repo [web:6][web:18]
