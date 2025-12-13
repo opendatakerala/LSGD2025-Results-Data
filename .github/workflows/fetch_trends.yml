@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
   schedule:
     # Every 30 minutes – adjust as you like (UTC)
-    - cron: "*/30 * * * *"
+    - cron: "*/45 * * * *"
 
 jobs:
   fetch-and-commit:
