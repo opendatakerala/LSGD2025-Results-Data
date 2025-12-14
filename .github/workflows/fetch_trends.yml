@@ -2,9 +2,9 @@ name: Fetch TREND data and commit CSV
 
 on:
   workflow_dispatch:
-  schedule:
+  # schedule:
     # Every 30 minutes – adjust as you like (UTC)
-    - cron: "*/45 * * * *"
+    # - cron: "*/45 * * * *"
 
 jobs:
   fetch-and-commit:
